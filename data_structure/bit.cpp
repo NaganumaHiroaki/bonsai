@@ -70,14 +70,14 @@ class RangeMinimumQueryBIT {
 };
 
 template <class T>
-class RangeMaxQueryBIT {
+class RangeMaximumQueryBIT {
     // 1-indexed
     private:
         T min_inf;
         T node_num;
         vector<T> bit;
     public:
-        RangeMaxQueryBIT(T n) {
+        RangeMaximumQueryBIT(T n) {
             min_inf = numeric_limits<T>::min();  // please set yourself
             node_num = n;
             bit.resize(node_num + 1);
