@@ -120,7 +120,7 @@ int main() {
     }
     box[0] = P(0, 0);
     sort(box.begin(), box.end(), comp);
-    RangeMaxQueryBIT<ll> B(MAX_W);
+    RangeMaximumQueryBIT<ll> B(MAX_W);
     vector<ll> dp(N + 1);
     B.update(1, 0);  // H = 1 (H = 0) 
     for (ll i = 1; i <= N; i++) {
