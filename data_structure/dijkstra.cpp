@@ -28,11 +28,11 @@ class Dijkstra {
             dist.resize(node_num);
             fill(dist.begin(), dist.end(), inf);
         }
-        void add_edge(T u, T v, T cost) {
-            edge e1 = {v, cost};
-            graph[u].push_back(edge(e1));
+        void add_edge(T from, T to, T cost) {
+            edge e1 = {to, cost};
+            graph[from].push_back(edge(e1));
         }
-        void calc_min_dist(T start) {
+        void calc_shortest_path(T start) {
             priority_queue<P, vector<P>, greater<P> > PQ;
             dist[start] = 0;
             PQ.push(P(0, start));
@@ -70,8 +70,8 @@ int main() {
         D1.add_edge(a, b, c);
         D2.add_edge(b, a, c);
     }
-    D1.calc_min_dist(0);
-    D2.calc_min_dist(0);
+    D1.calc_shortest_path(0);
+    D2.calc_shortest_path(0);
     ll ans = 0;
     ll INF = numeric_limits<ll>::max();
     for (ll u = 0; u < N; u++) {
