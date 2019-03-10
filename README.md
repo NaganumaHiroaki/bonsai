@@ -6,3 +6,4 @@
     * Union-Find
     * Dijkstra
     * BIT（SumBIT, RangeMinimumQueryBIT, RangeMaxQueryBIT）
+    * Bellmanford
