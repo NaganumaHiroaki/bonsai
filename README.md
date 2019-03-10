@@ -7,3 +7,4 @@
     * Dijkstra
     * BIT（SumBIT, RangeMinimumQueryBIT, RangeMaxQueryBIT）
     * Bellmanford
+    * Warshall-Floyd
