@@ -7,33 +7,34 @@ using namespace std;
 typedef long long ll;
 
 // Copy start
+template <class T>
 class UnionFind {
     private:
-        ll node_num;
-        vector<ll> parent;
-        vector<ll> node_rank;
-        vector<ll> sizes;
+        T node_num;
+        vector<T> parent;
+        vector<T> node_rank;
+        vector<T> sizes;
     public:
-        UnionFind(ll n) {
+        UnionFind(T n) {
             node_num = n;
             parent.resize(node_num);
             node_rank.resize(node_num);
             sizes.resize(node_num);
         }
         void init() {
-            for (ll i = 0; i < node_num; i++) {
+            for (T i = 0; i < node_num; i++) {
                 parent[i] = i;
                 node_rank[i] = 0;
                 sizes[i] = 1;
             }
         }
-        ll root(ll u) {
+        T root(T u) {
             return parent[u] == u ? u : parent[u] = root(parent[u]);
         }
-        bool same(ll u, ll v) {
+        bool same(T u, T v) {
             return root(u) == root(v);
         }
-        void unite(ll u, ll v) {
+        void unite(T u, T v) {
             u = root(u);
             v = root(v);
             if (u == v) return;
@@ -49,7 +50,7 @@ class UnionFind {
                 }
             }
         }
-        ll get_size(ll u) {
+        T get_size(T u) {
             return sizes[root(u)];
         }
 };
@@ -59,7 +60,7 @@ int main() {
     // This sample is Atcoder Beginners Contest 120 D
     ll N, M;
     cin >> N >> M;
-    UnionFind UF(N);
+    UnionFind<ll> UF(N);
     UF.init();
     vector<ll> A(M), B(M);
     for (ll i = 0; i < M; i++) {
