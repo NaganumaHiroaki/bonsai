@@ -5,3 +5,4 @@
 * 作成済み
     * Union-Find
     * Dijkstra
+    * BIT（SumBIT, RangeMinimumQueryBIT, RangeMaxQueryBIT）
