@@ -6,7 +6,7 @@
 using namespace std;
 typedef long long ll;
 
-// Start
+// Copy start
 class UnionFind {
     private:
         ll node_num;
@@ -53,10 +53,10 @@ class UnionFind {
             return sizes[root(u)];
         }
 };
-// End
+// Copy end
 
 int main() {
-    // This sample usage is Atcoder Beginners Contest 120 D
+    // This sample is Atcoder Beginners Contest 120 D
     ll N, M;
     cin >> N >> M;
     UnionFind UF(N);
