@@ -20,6 +20,7 @@ class SumBIT {
         SumBIT(T n) {
             node_num = n;
             bit.resize(node_num);
+            fill(bit.begin(), bit.end(), 0);
         }
         T get_sum(T idx) {
             T sum_num = 0;
@@ -49,6 +50,7 @@ class RangeMinimumQueryBIT {
             inf = numeric_limits<T>::max();  // please pay attention to overflow
             node_num = n;
             bit.resize(node_num + 1);
+            fill(bit.begin(), bit.end(), inf);
         }
         T get_min(T idx) {
             T min_num = inf;
@@ -76,9 +78,10 @@ class RangeMaxQueryBIT {
         vector<T> bit;
     public:
         RangeMaxQueryBIT(T n) {
-            min_inf = 0;  // please set yourself
+            min_inf = numeric_limits<T>::min();  // please set yourself
             node_num = n;
             bit.resize(node_num + 1);
+            fill(bit.begin(), bit.end(), min_inf);
         }
         T get_max(T idx) {
             T max_num = min_inf;
@@ -112,12 +115,14 @@ int main() {
     vector<P> box(N + 1);
     for (ll i = 1; i <= N; i++) {
         cin >> W >> H;
+        W++, H++;  // BIT is 1-indexed, so add offset
         box[i] = P(W, H);
     }
     box[0] = P(0, 0);
     sort(box.begin(), box.end(), comp);
     RangeMaxQueryBIT<ll> B(MAX_W);
     vector<ll> dp(N + 1);
+    B.update(1, 0);  // H = 1 (H = 0) 
     for (ll i = 1; i <= N; i++) {
         dp[i] = B.get_max(box[i].second - 1) + 1;
         B.update(box[i].second, dp[i]);
