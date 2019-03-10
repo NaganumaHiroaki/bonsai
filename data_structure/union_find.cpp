@@ -20,8 +20,6 @@ class UnionFind {
             parent.resize(node_num);
             node_rank.resize(node_num);
             sizes.resize(node_num);
-        }
-        void init() {
             for (T i = 0; i < node_num; i++) {
                 parent[i] = i;
                 node_rank[i] = 0;
@@ -61,7 +59,6 @@ int main() {
     ll N, M;
     cin >> N >> M;
     UnionFind<ll> UF(N);
-    UF.init();
     vector<ll> A(M), B(M);
     for (ll i = 0; i < M; i++) {
         cin >> A[i] >> B[i];
