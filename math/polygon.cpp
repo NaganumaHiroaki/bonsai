@@ -1,10 +1,11 @@
 #include<iostream>
+// Need start
 #include<vector>
+#include<algorithm>
+// Need end
 using namespace std;
 
-const double EPS = 1e-10;
-
-// two-dimension vector class
+// Copy start
 struct P {
     double x, y;
     P() {}
@@ -32,17 +33,17 @@ bool cmp_x(const P& p, const P& q) {
     return p.y < q.y;
 }
 
+// Graham's scan
 vector<P> convex_hull(vector<P> ps, int vertex_num) {
     sort(ps.begin(), ps.end(), cmp_x);
-    for (int i = 0; i < ps.size(); i++) cout << '(' << ps[i].x << ',' << ps[i].y << ')' << endl;
     int k = 0;
     vector<P> qs(vertex_num * 2);
-    // 下側
+    // bottom
     for (int i = 0; i < vertex_num; i++) {
         while (k > 1 && (qs[k - 1] - qs[k - 2]).det(ps[i] - qs[k - 1]) <= 0) k--;
         qs[k++] = ps[i];
     }
-    // 上側
+    // up
     for (int i = vertex_num - 2, t = k; i >= 0; i--) {
         while (k > t && (qs[k - 1] - qs[k - 2]).det(ps[i] - qs[k - 1]) <= 0) k--;
         qs[k++] = ps[i];
@@ -50,6 +51,7 @@ vector<P> convex_hull(vector<P> ps, int vertex_num) {
     qs.resize(k - 1);
     return qs;
 }
+// Copy end
 
 int main() {
     P pos1(1, 2), pos2(3, 4);
