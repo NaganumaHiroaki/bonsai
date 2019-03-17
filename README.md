@@ -12,3 +12,4 @@
         * BIT（SumBIT, RangeMinimumQueryBIT, RangeMaxQueryBIT）
     * 幾何
         * 二次元座標の構造体
+        * 凸包（グラハムスキャン）
