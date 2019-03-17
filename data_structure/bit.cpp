@@ -6,23 +6,22 @@
 #include<vector>
 // Need end
 using namespace std;
-typedef long long ll;
-typedef pair<ll, ll> P;
+typedef pair<int, int> P;
 
 // Copy start
 template <class T>
 class SumBIT {
     // 1-indexed
     private:
-        T node_num;
+        int node_num;
         vector<T> bit;
     public:
-        SumBIT(T n) {
+        SumBIT(int n) {
             node_num = n;
             bit.resize(node_num);
             fill(bit.begin(), bit.end(), 0);
         }
-        T get_sum(T idx) {
+        T get_sum(int idx) {
             T sum_num = 0;
             while (idx > 0) {
                 sum_num += bit[idx];
@@ -30,7 +29,7 @@ class SumBIT {
             }
             return sum_num;
         }
-        void update(T idx, T x) {
+        void update(int idx, T x) {
             while (idx <= node_num) {
                 bit[idx] += x;
                 idx += idx & -idx;
@@ -43,16 +42,16 @@ class RangeMinimumQueryBIT {
     // 1-indexed
     private:
         T inf;
-        T node_num;
+        int node_num;
         vector<T> bit;
     public:
-        RangeMinimumQueryBIT(T n) {
+        RangeMinimumQueryBIT(int n) {
             inf = numeric_limits<T>::max();  // please pay attention to overflow
             node_num = n;
             bit.resize(node_num + 1);
             fill(bit.begin(), bit.end(), inf);
         }
-        T get_min(T idx) {
+        T get_min(int idx) {
             T min_num = inf;
             while (idx > 0) {
                 min_num = min(min_num, bit[idx]);
@@ -60,7 +59,7 @@ class RangeMinimumQueryBIT {
             }
             return min_num;
         }
-        void update(T idx, T x) {
+        void update(int idx, T x) {
             bit[idx] = x;
             while (idx <= node_num) {
                 bit[idx] = min(bit[idx], x);
@@ -74,16 +73,16 @@ class RangeMaximumQueryBIT {
     // 1-indexed
     private:
         T min_inf;
-        T node_num;
+        int node_num;
         vector<T> bit;
     public:
-        RangeMaximumQueryBIT(T n) {
+        RangeMaximumQueryBIT(int n) {
             min_inf = numeric_limits<T>::min();  // please set yourself
             node_num = n;
             bit.resize(node_num + 1);
             fill(bit.begin(), bit.end(), min_inf);
         }
-        T get_max(T idx) {
+        T get_max(int idx) {
             T max_num = min_inf;
             while (idx > 0) {
                 max_num = max(max_num, bit[idx]);
@@ -91,7 +90,7 @@ class RangeMaximumQueryBIT {
             }
             return max_num;
         }
-        void update(T idx, T x) {
+        void update(int idx, T x) {
             bit[idx] = x;
             while (idx <= node_num) {
                 bit[idx] = max(bit[idx], x);
@@ -101,7 +100,7 @@ class RangeMaximumQueryBIT {
 };
 // Copy end
 
-const ll MAX_W = 1e5 + 1;
+const int MAX_W = 1e5 + 1;
 
 bool comp(const P& l, const P& r) {
     if (l.first != r.first) return l.first < r.first;
@@ -110,25 +109,25 @@ bool comp(const P& l, const P& r) {
 
 int main() {
     // This sample is Atcoder Beginners Contest 38 D
-    ll N, W, H;
+    int N, W, H;
     cin >> N;
     vector<P> box(N + 1);
-    for (ll i = 1; i <= N; i++) {
+    for (int i = 1; i <= N; i++) {
         cin >> W >> H;
         W++, H++;  // BIT is 1-indexed, so add offset
         box[i] = P(W, H);
     }
     box[0] = P(0, 0);
     sort(box.begin(), box.end(), comp);
-    RangeMaximumQueryBIT<ll> B(MAX_W);
-    vector<ll> dp(N + 1);
+    RangeMaximumQueryBIT<int> B(MAX_W);
+    vector<int> dp(N + 1);
     B.update(1, 0);  // H = 1 (H = 0) 
-    for (ll i = 1; i <= N; i++) {
+    for (int i = 1; i <= N; i++) {
         dp[i] = B.get_max(box[i].second - 1) + 1;
         B.update(box[i].second, dp[i]);
     }
-    ll ans = numeric_limits<ll>::min();
-    for (ll i = 1; i <= N; i++) {
+    int ans = numeric_limits<int>::min();
+    for (int i = 1; i <= N; i++) {
         ans = max(ans, dp[i]);
     }
     cout << ans << endl;
