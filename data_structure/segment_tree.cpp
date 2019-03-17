@@ -29,7 +29,7 @@ class RangeMinimumQuerySegTree {
                 node[node_idx] = min(node[node_idx * 2 + 1], node[node_idx * 2 + 2]);
             }
         }
-        T get_min(int left, int right, int node_idx, int node_left, int node_right) {
+        T _get_min(int left, int right, int node_idx, int node_left, int node_right) {
             // interval [node_left, node_right) corresponds to node_idx
             if (node_right <= left || right <= node_left) {
                 return numeric_limits<T>::max();
@@ -38,10 +38,13 @@ class RangeMinimumQuerySegTree {
                 return node[node_idx];
             }
             else {
-                T left_value = get_min(left, right, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
-                T right_value = get_min(left, right, node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
+                T left_value = _get_min(left, right, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
+                T right_value = _get_min(left, right, node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
                 return min(left_value, right_value);
             }
+        }
+        T get_min(int left, int right) {
+            return _get_min(left, right, 0, 0, node_size);
         }
 };
 // Copy end
@@ -72,7 +75,7 @@ int main() {
         pow_max_w *= 2;
     }
     for (int i = 0; i < N; i++) {
-        dp[i] = -S.get_min(0, box[i].second, 0, 0, pow_max_w) + 1;  // set power of 2 value as forth argument
+        dp[i] = -S.get_min(0, box[i].second) + 1;
         S.update(box[i].second, -dp[i]);
     }
     int ans = numeric_limits<int>::min();
