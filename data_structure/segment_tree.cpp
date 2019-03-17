@@ -69,11 +69,6 @@ int main() {
     RangeMinimumQuerySegTree<int> S(MAX_W);
     vector<int> dp(N, 0);
     S.update(0, 0);
-    // calc power of 2 value
-    int pow_max_w = 1;
-    while (pow_max_w < MAX_W) {
-        pow_max_w *= 2;
-    }
     for (int i = 0; i < N; i++) {
         dp[i] = -S.get_min(0, box[i].second) + 1;
         S.update(box[i].second, -dp[i]);
