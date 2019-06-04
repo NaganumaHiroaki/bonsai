@@ -7,17 +7,19 @@
 // Need end
 using namespace std;
 typedef long long ll;
-typedef pair<ll, ll> P;
+
 
 // Copy start
 template <class T>
 class Dijkstra {
     private:
+        using P = pair<int, int>;
         struct edge {
-            T to, cost;
+            int to;
+            T cost;
         };
         T inf;
-        T node_num;
+        int node_num;
         vector<vector<edge> > graph;
         vector<T> dist;
     public:
@@ -28,20 +30,20 @@ class Dijkstra {
             dist.resize(node_num);
             fill(dist.begin(), dist.end(), inf);
         }
-        void add_edge(T from, T to, T cost) {
+        void add_edge(int from, int to, T cost) {
             edge e1 = {to, cost};
             graph[from].push_back(edge(e1));
         }
-        void calc_shortest_path(T start) {
+        void calc_shortest_path(int start) {
             priority_queue<P, vector<P>, greater<P> > PQ;
             dist[start] = 0;
             PQ.push(P(0, start));
             while (!PQ.empty()) {
                 P now = PQ.top();
                 PQ.pop();
-                T now_u = now.second;
+                int now_u = now.second;
                 if (dist[now_u] < now.first) continue;
-                for (T i = 0; i < graph[now_u].size(); i++) {
+                for (int i = 0; i < graph[now_u].size(); i++) {
                     edge e = graph[now_u][i];
                     if (dist[e.to] > dist[now_u] + e.cost) {
                         dist[e.to] = dist[now_u] + e.cost;
@@ -50,7 +52,7 @@ class Dijkstra {
                 }
             }
         }
-        T get_dist(T u) {
+        T get_dist(int u) {
             return dist[u];
         }
 };
