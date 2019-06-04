@@ -7,6 +7,7 @@
         * Dijkstra
         * Bellmanford
         * Warshall-Floyd
+        * 二部グラフの最大マッチング
     * データ構造
         * Union-Find
         * BIT（SumBIT, RangeMinimumQueryBIT, RangeMaxQueryBIT）
