@@ -21,16 +21,16 @@ class Matrix {
         size_t row() const {return row_size;}
         size_t col() const {return column_size;}
 
-        array &operator[] (size_t idx) {
+        array& operator[] (size_t idx) {
             return data[idx];
         }
-        const array &operator[] (size_t idx) const {
+        const array& operator[] (size_t idx) const {
             return data[idx];
         }
         const Matrix operator+ (const Matrix& X) const {
             Matrix res(row_size, column_size);
-            for (int i = 0; i < (int)row_size; i++) {
-                for (int j = 0; j < (int)column_size; j++) {
+            for (int i = 0; i < (int)res.row(); i++) {
+                for (int j = 0; j < (int)res.col(); j++) {
                     res[i][j] = data[i][j] + X[i][j];
                 }
             }
@@ -46,8 +46,8 @@ class Matrix {
         }
         const Matrix operator- (const Matrix& X) const {
             Matrix res(row_size, column_size);
-            for (int i = 0; i < (int)row_size; i++) {
-                for (int j = 0; j < (int)column_size; j++) {
+            for (int i = 0; i < (int)res.row(); i++) {
+                for (int j = 0; j < (int)res.col(); j++) {
                     res[i][j] = data[i][j] - X[i][j];
                 }
             }
@@ -64,8 +64,8 @@ class Matrix {
         const Matrix operator* (const Matrix& X) const {
             size_t new_row = row_size, new_column = X.col();
             Matrix res(new_row, new_column);
-            for (int i = 0; i < (int)new_row; i++) {
-                for (int j = 0; j < (int)new_column; j++) {
+            for (int i = 0; i < (int)res.row(); i++) {
+                for (int j = 0; j < (int)res.col(); j++) {
                     for (int k = 0; k < (int)column_size; k++) {
                         res[i][j] += data[i][k] * X[k][j];
                     }
@@ -90,6 +90,23 @@ class Matrix {
             }
             return *this;
         }
+        const Matrix operator% (T mod) const {
+            Matrix res(data);
+            for (int i = 0; i < (int)res.row(); i++) {
+                for (int j = 0; j < (int)res.col(); j++) {
+                    res[i][j] %= mod;
+                }
+            }
+            return res;
+        }
+        Matrix& operator%= (T mod) {
+            for (int i = 0; i < (int)row_size; i++) {
+                for (int j = 0; j < (int)column_size; j++) {
+                    data[i][j] %= mod;
+                }
+            }
+            return *this;
+        }
 };
 
 int main() {
@@ -104,15 +121,10 @@ int main() {
             cin >> m1[i][j];
         }
     }
-    cout << "Input m2 ->" << endl;
-    cin >> r >> c;
-    Matrix<int> m2(r, c);
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            cin >> m2[i][j];
-        }
-    }
-    m1 += m2;
+    cout << "Input mod ->" << endl;
+    int mod;
+    cin >> mod;
+    m1 %= mod;
     cout << "result" << endl;
     for (int i = 0; i < m1.row(); i++) {
         for (int j = 0; j < m1.col(); j++) {
