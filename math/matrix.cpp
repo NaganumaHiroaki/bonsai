@@ -3,7 +3,9 @@
 #include<vector>
 // Need end
 using namespace std;
+typedef long long ll;
 
+// Copy start
 template<typename T>
 class Matrix {
     private:
@@ -107,30 +109,68 @@ class Matrix {
             }
             return *this;
         }
+
+        static Matrix identity(size_t row, size_t col) {
+            Matrix<T> res(row, col);
+            for (int i = 0; i < (int)res.row(); i++) {
+                res[i][i] = 1;
+            }
+            return res;
+        }
 };
+// Copy end
+
+
+ll MOD;
+
+ll lower_num(ll a, ll d, ll x) {
+    if (x <= a) return a;
+    return (x - a + d - 1) / d * d + a;
+}
+
+Matrix<ll> calc_pow(Matrix<ll> x, ll y) {
+    Matrix<ll> z = Matrix<ll>::identity(x.row(), x.col());
+    while (y > 0) {
+        if (y & 1) {
+            z = z * x;
+            z %= MOD;
+        }
+        x = x * x;
+        x %= MOD;
+        y /= 2;
+    }
+    return z;
+}
 
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int r, c;
-    cout << "Input m1 ->" << endl;
-    cin >> r >> c;
-    Matrix<int> m1(r, c);
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            cin >> m1[i][j];
-        }
+    // This sample is Atcoder Beginners Contest 129 F
+    ll L, A, B;
+    cin >> L >> A >> B >> MOD;
+    Matrix<ll> X(1, 3), Y(3, 3);
+    // X
+    X[0][0] = 0;
+    X[0][1] = A;
+    X[0][2] = 1;
+    // Y
+    Y[1][0] = 1;
+    Y[1][1] = 1;
+    Y[2][2] = 1;
+    Y[2][1] = B;
+    ll pow_num = 1;
+    for (int d = 1; d <= 18; d++) {
+        if (L == 0) break;
+        Y[0][0] = (pow_num * 10) % MOD;
+        ll high = lower_num(A, B, pow_num * 10);
+        ll low = lower_num(A, B, pow_num);
+        ll Cd = min((high - low) / B, L);
+        L -= Cd;
+        Matrix<ll> Z = calc_pow(Y, Cd);
+        X = X * Z;
+        X %= MOD;
+        pow_num *= 10;
     }
-    cout << "Input mod ->" << endl;
-    int mod;
-    cin >> mod;
-    m1 %= mod;
-    cout << "result" << endl;
-    for (int i = 0; i < m1.row(); i++) {
-        for (int j = 0; j < m1.col(); j++) {
-            cout << m1[i][j] << ' ';
-        }
-        cout << endl;
-    }
+    cout << X[0][0] << endl;
     return 0;
 }
