@@ -2,105 +2,48 @@
 #include<utility>
 #include<algorithm>
 // Need start
-#include<limits>
 #include<vector>
+#include<functional>
 // Need end
 using namespace std;
 typedef pair<int, int> P;
 
 // Copy start
-template <class T>
-class SumBIT {
+template <typename T>
+class BIT {
     // 1-indexed
     private:
-        int node_num;
-        vector<T> bit;
+        size_t node_size;
+        vector<T> node;
+        T identity;
+        function<T(T, T)> operation;
+        function<T(T, T)> update;
     public:
-        SumBIT(int n) {
-            node_num = n;
-            bit.resize(node_num);
-            fill(bit.begin(), bit.end(), 0);
+        BIT(size_t _node_size, T _identity, function<T(T, T)> _operation, function<T(T, T)> _update):
+        node_size(_node_size), identity(_identity), operation(_operation), update(_update) {
+            node = vector<T>(node_size + 1, identity);
         }
-        T get_sum(int idx) {
-            T sum_num = 0;
+        void change(int idx, T new_value) {
+            node[idx] = update(node[idx], new_value);
+            while (idx <= node_size) {
+                idx += idx & -idx;
+                if (idx > node_size) break;
+                node[idx] = operation(node[idx], new_value);
+            }
+        }
+        T query(int idx) {
+            T res = identity;
             while (idx > 0) {
-                sum_num += bit[idx];
+                res = operation(res, node[idx]);
                 idx -= idx & -idx;
             }
-            return sum_num;
-        }
-        void update(int idx, T x) {
-            while (idx <= node_num) {
-                bit[idx] += x;
-                idx += idx & -idx;
-            }
-        }
-};
-
-template <class T>
-class RangeMinimumQueryBIT {
-    // 1-indexed
-    private:
-        T inf;
-        int node_num;
-        vector<T> bit;
-    public:
-        RangeMinimumQueryBIT(int n) {
-            inf = numeric_limits<T>::max();  // please pay attention to overflow
-            node_num = n;
-            bit.resize(node_num + 1);
-            fill(bit.begin(), bit.end(), inf);
-        }
-        T get_min(int idx) {
-            T min_num = inf;
-            while (idx > 0) {
-                min_num = min(min_num, bit[idx]);
-                idx -= idx & -idx;
-            }
-            return min_num;
-        }
-        void update(int idx, T x) {
-            bit[idx] = x;
-            while (idx <= node_num) {
-                bit[idx] = min(bit[idx], x);
-                idx += idx & -idx;
-            }
-        }
-};
-
-template <class T>
-class RangeMaximumQueryBIT {
-    // 1-indexed
-    private:
-        T min_inf;
-        int node_num;
-        vector<T> bit;
-    public:
-        RangeMaximumQueryBIT(int n) {
-            min_inf = numeric_limits<T>::min();  // please set yourself
-            node_num = n;
-            bit.resize(node_num + 1);
-            fill(bit.begin(), bit.end(), min_inf);
-        }
-        T get_max(int idx) {
-            T max_num = min_inf;
-            while (idx > 0) {
-                max_num = max(max_num, bit[idx]);
-                idx -= idx & -idx;
-            }
-            return max_num;
-        }
-        void update(int idx, T x) {
-            bit[idx] = x;
-            while (idx <= node_num) {
-                bit[idx] = max(bit[idx], x);
-                idx += idx & -idx;
-            }
+            return res;
         }
 };
 // Copy end
 
 const int MAX_W = 1e5 + 1;
+const int INF = 1 << 30;
 
 bool comp(const P& l, const P& r) {
     if (l.first != r.first) return l.first < r.first;
@@ -119,14 +62,16 @@ int main() {
     }
     box[0] = P(0, 0);
     sort(box.begin(), box.end(), comp);
-    RangeMaximumQueryBIT<int> B(MAX_W);
+    BIT<int> B(MAX_W, -INF, 
+                [](int a, int b) {return max(a, b);},
+                [](int a, int b) {return b;});
     vector<int> dp(N + 1);
-    B.update(1, 0);  // H = 1 (H = 0) 
+    B.change(1, 0);  // H = 1 (H = 0) 
     for (int i = 1; i <= N; i++) {
-        dp[i] = B.get_max(box[i].second - 1) + 1;
-        B.update(box[i].second, dp[i]);
+        dp[i] = B.query(box[i].second - 1) + 1;
+        B.change(box[i].second, dp[i]);
     }
-    int ans = numeric_limits<int>::min();
+    int ans = -INF;
     for (int i = 1; i <= N; i++) {
         ans = max(ans, dp[i]);
     }
