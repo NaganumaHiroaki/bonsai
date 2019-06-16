@@ -10,8 +10,8 @@
         * 二部グラフの最大マッチング
     * データ構造
         * Union-Find
-        * BIT（SumBIT, RangeMinimumQueryBIT, RangeMaxQueryBIT）
-        * セグメント木（RangeMinimumQuerySegmentTree）
+        * 抽象化BIT
+        * 抽象化セグメント木
     * 幾何
         * 二次元座標の構造体
         * 凸包（グラハムスキャン）
