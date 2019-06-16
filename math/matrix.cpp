@@ -14,22 +14,20 @@ class Matrix {
         size_t row_size, column_size;
         matrix data;
     public:
-        Matrix(size_t row, size_t column):data(row, array(column, T())) {
-            row_size = row;
-            column_size = column;
-        }
+        Matrix(size_t _row_size, size_t _column_size):
+        data(_row_size, array(_column_size, T())), row_size(_row_size), column_size(_column_size) {}
         Matrix(matrix new_data):data(new_data){}
 
         size_t row() const {return row_size;}
         size_t col() const {return column_size;}
 
-        array& operator[] (size_t idx) {
+        array& operator[](size_t idx) {
             return data[idx];
         }
-        const array& operator[] (size_t idx) const {
+        const array& operator[](size_t idx) const {
             return data[idx];
         }
-        const Matrix operator+ (const Matrix& X) const {
+        const Matrix operator+(const Matrix& X) const {
             Matrix res(row_size, column_size);
             for (int i = 0; i < (int)res.row(); i++) {
                 for (int j = 0; j < (int)res.col(); j++) {
@@ -38,7 +36,7 @@ class Matrix {
             }
             return res;
         }
-        Matrix& operator+= (const Matrix& X) {
+        Matrix& operator+=(const Matrix& X) {
             for (int i = 0; i < (int)row_size; i++) {
                 for (int j = 0; j < (int)column_size; j++) {
                     data[i][j] += X[i][j];
@@ -46,7 +44,7 @@ class Matrix {
             }
             return *this;
         }
-        const Matrix operator- (const Matrix& X) const {
+        const Matrix operator-(const Matrix& X) const {
             Matrix res(row_size, column_size);
             for (int i = 0; i < (int)res.row(); i++) {
                 for (int j = 0; j < (int)res.col(); j++) {
@@ -55,7 +53,7 @@ class Matrix {
             }
             return res;
         }
-        Matrix& operator-= (const Matrix& X) {
+        Matrix& operator-=(const Matrix& X) {
             for (int i = 0; i < (int)row_size; i++) {
                 for (int j = 0; j < (int)column_size; j++) {
                     data[i][j] -= X[i][j];
@@ -63,7 +61,7 @@ class Matrix {
             }
             return *this;
         }
-        const Matrix operator* (const Matrix& X) const {
+        const Matrix operator*(const Matrix& X) const {
             size_t new_row = row_size, new_column = X.col();
             Matrix res(new_row, new_column);
             for (int i = 0; i < (int)res.row(); i++) {
@@ -75,7 +73,7 @@ class Matrix {
             }
             return res;
         }
-        const Matrix operator* (T scalar) const {
+        const Matrix operator*(T scalar) const {
             Matrix res(row_size, column_size);
             for (int i = 0; i < res.row(); i++) {
                 for (int j = 0; j < res.col(); j++) {
@@ -84,7 +82,7 @@ class Matrix {
             }
             return res;
         }
-        Matrix& operator*= (T scalar) {
+        Matrix& operator*=(T scalar) {
             for (int i = 0; i < (int)row_size; i++) {
                 for (int j = 0; j < (int)column_size; j++) {
                     data[i][j] *= scalar;
@@ -92,7 +90,7 @@ class Matrix {
             }
             return *this;
         }
-        const Matrix operator% (T mod) const {
+        const Matrix operator%(T mod) const {
             Matrix res(data);
             for (int i = 0; i < (int)res.row(); i++) {
                 for (int j = 0; j < (int)res.col(); j++) {
@@ -101,7 +99,7 @@ class Matrix {
             }
             return res;
         }
-        Matrix& operator%= (T mod) {
+        Matrix& operator%=(T mod) {
             for (int i = 0; i < (int)row_size; i++) {
                 for (int j = 0; j < (int)column_size; j++) {
                     data[i][j] %= mod;
