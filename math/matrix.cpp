@@ -16,7 +16,8 @@ class Matrix {
     public:
         Matrix(size_t _row_size, size_t _column_size):
         data(_row_size, array(_column_size, T())), row_size(_row_size), column_size(_column_size) {}
-        Matrix(matrix new_data):data(new_data){}
+        Matrix(const Matrix<T>& matrix):
+        data(matrix.data), row_size(matrix.row_size), column_size(matrix.column_size){}
 
         size_t row() const {return row_size;}
         size_t col() const {return column_size;}
@@ -91,7 +92,7 @@ class Matrix {
             return *this;
         }
         const Matrix operator%(T mod) const {
-            Matrix res(data);
+            Matrix res(*this);
             for (int i = 0; i < (int)res.row(); i++) {
                 for (int j = 0; j < (int)res.col(); j++) {
                     res[i][j] %= mod;
@@ -165,8 +166,7 @@ int main() {
         ll Cd = min((high - low) / B, L);
         L -= Cd;
         Matrix<ll> Z = calc_pow(Y, Cd);
-        X = X * Z;
-        X %= MOD;
+        X = (X * Z) % MOD;
         pow_num *= 10;
     }
     cout << X[0][0] << endl;
