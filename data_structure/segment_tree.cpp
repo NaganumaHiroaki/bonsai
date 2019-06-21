@@ -52,6 +52,15 @@ class SegTree {
         T operator[](int idx) {
             return node[idx + node_size - 1];
         }
+        // serach-method's usage is written on CF567
+        int _search(int kth, int node_idx, int node_left, int node_right) {
+            if (node_right - node_left == 1) return node_idx - node_size + 1;
+            if (node[node_idx * 2 + 1] < kth) return _search(kth - node[node_idx * 2 + 1], node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
+            else return _search(kth, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
+        }
+        int search(int kth) {
+            return _search(kth, 0, 0, node_size);
+        }
 };
 // Copy end
 
@@ -65,6 +74,15 @@ For example,
 2) Range Sum Query
     auto operation = [](int a, int b) {return a + b}
     auto update = [](int a, int b) {return a + b}
+3) Set
+    identity = 0
+    auto operaton = [](int a, int b) {return a + b}
+    auto update = [](int a, int b) {return b(=1)}
+    If you use SegTree as set, you can use search method.
+    This method can be used for accessing k-th number in set.
+    (Be careful that you cannot use Segtree as set when 
+    set includes large number, because number is corresponding
+    to SegTree's index.)
 */
 
 const int MAX_W = 1e5 + 1;
