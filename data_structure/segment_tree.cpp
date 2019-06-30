@@ -54,6 +54,7 @@ class SegTree {
         }
         // serach-method's usage is written on CF567
         int _search(int kth, int node_idx, int node_left, int node_right) {
+            // kth >= 1
             if (node_right - node_left == 1) return node_idx - node_size + 1;
             if (node[node_idx * 2 + 1] < kth) return _search(kth - node[node_idx * 2 + 1], node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
             else return _search(kth, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
@@ -69,15 +70,16 @@ You have to pass update and operation function to SegTree.
 It is very useful to use lambda functions.
 For example,
 1) Range Minimum Query
-    auto operation = [](int a, int b) {return min(a, b)}
-    auto update = [](int a, int b) {return b}
+    auto operation = [](int a, int b) {return min(a, b);}
+    auto update = [](int a, int b) {return b;}
 2) Range Sum Query
-    auto operation = [](int a, int b) {return a + b}
-    auto update = [](int a, int b) {return a + b}
+    auto operation = [](int a, int b) {return a + b;}
+    auto update = [](int a, int b) {return a + b;}
 3) Set
     identity = 0
-    auto operaton = [](int a, int b) {return a + b}
-    auto update = [](int a, int b) {return b(=1)}
+    auto operaton = [](int a, int b) {return a + b;}
+    auto update = [](int a, int b) {return 1;}      // without duplicate
+                or [](int a, int b) {return a + b;} // duplicate
     If you use SegTree as set, you can use search method.
     This method can be used for accessing k-th number in set.
     (Be careful that you cannot use Segtree as set when 
@@ -88,11 +90,6 @@ For example,
 const int MAX_W = 1e5 + 1;
 const int INF = 1 << 30;
 
-bool comp(const P& l, const P& r) {
-    if (l.first != r.first) return l.first < r.first;
-    else return l.second > r.second;
-}
-
 int main() {
     // This sample is Atcoder Beginners Contest 38 D
     int N, W, H;
@@ -102,10 +99,11 @@ int main() {
         cin >> W >> H;
         box[i] = P(W, H);
     }
-    sort(box.begin(), box.end(), comp);
-    SegTree<int> S(MAX_W, INF, 
-                    [](int a, int b) {return min(a, b);},
-                    [](int a, int b) {return b;});
+    sort(box.begin(), box.end(), [](const P& l, const P&r) {
+        if (l.first != r.first) return l.first < r.first;
+        else return l.second > r.second;
+    });
+    SegTree<int> S(MAX_W, INF, [](int a, int b) {return min(a, b);}, [](int a, int b) {return b;});
     vector<int> dp(N, 0);
     S.change(0, 0);
     for (int i = 0; i < N; i++) {
