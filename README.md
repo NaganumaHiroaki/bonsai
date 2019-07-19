@@ -8,6 +8,7 @@
         * Bellmanford
         * Warshall-Floyd
         * 二部グラフの最大マッチング
+        * スライド最小値
     * データ構造
         * Union-Find
         * 抽象化BIT
