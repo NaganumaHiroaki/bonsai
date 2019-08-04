@@ -6,6 +6,7 @@
 // Need end
 using namespace std;
 
+// Copy start
 template<typename ITERATOR>
 class KMP {
     private:
@@ -64,49 +65,64 @@ class KMP {
         }
 };
 
+int N, M;
+
+const int MAX_LEN = 2020202;
+
+bool is_ok[MAX_LEN], is_visited[MAX_LEN];
+int period[MAX_LEN];
+
+void dfs(int idx) {
+    is_visited[idx] = true;
+    period[idx] = -1;
+    int next_idx = (idx + M) % N;
+    if (!is_ok[next_idx]) {
+        period[idx] = 1;
+        return;
+    }
+    if (is_visited[next_idx]) {
+        if (period[next_idx] < 0) {
+            period[idx] = -1;
+            return;
+        }
+        else {
+            period[idx] = period[next_idx] + 1;
+            return;
+        }
+    }
+    dfs(next_idx);
+    if (period[next_idx] >= 0) period[idx] = period[next_idx] + 1;
+}
+// Copy end
+
 int main() {
+    // This sample is Atcode Beginners Contest 135 F
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string ptn;
-    cin >> ptn;
-    KMP<string> kmp(ptn);
-    string text;
-    cin >> text;
-    vector<int> match_pos = kmp.search(text);
-    vector<char> mark(text.size(), '.');
-    for (int i = 0; i < match_pos.size(); ++i) {
-        mark[match_pos[i]] = '*';
+    string S, T;
+    cin >> S >> T;
+    M = T.size();
+    string SS = S;
+    while (SS.size() < T.size()) {
+        SS += S;
     }
-    cout << endl;
-    cout << "---KMP matching result---" << endl;
-    cout << text << endl;
-    for (int i = 0; i < text.size(); ++i) {
-        cout << mark[i];
+    N = SS.size();
+    KMP<string> kmp(T);
+    vector<int> result = kmp.search(SS + SS);
+    for (int i = 0; i < result.size(); ++i) {
+        is_ok[result[i]] = true;
     }
-    cout << endl;
-    cout << "-------------------------" << endl;
-    cout << endl;
-    vector<int> naive_pos;
-    for (int i = 0; i < text.size() - ptn.size() + 1; ++i) {
-        bool is_ok = true;
-        for (int j = 0; j < ptn.size(); ++j) {
-            if (text[i + j] != ptn[j]) {
-                is_ok = false;
-                break;
-            }
-        }
-        if (is_ok) naive_pos.push_back(i);
+    for (int i = 0; i < N; ++i) {
+        if (is_ok[i] && !is_visited[i]) dfs(i);
     }
-    if (naive_pos.size() != match_pos.size()) {
-        cout << "mistake size..." << endl;
-        return 0;
-    }
-    for (int i = 0; i < naive_pos.size(); ++i) {
-        if (naive_pos[i] != match_pos[i]) {
-            cout << "mistake..." << endl;
+    int ans = 0;
+    for (int i = 0; i < N; ++i) {
+        if (period[i] < 0) {
+            cout << -1 << endl;
             return 0;
         }
+        ans = max(period[i], ans);
     }
-    cout << "OK" << endl;
+    cout << ans << endl;
     return 0;
 }
