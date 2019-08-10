@@ -64,6 +64,7 @@ class KMP {
             return res;
         }
 };
+// Copy end
 
 int N, M;
 
@@ -93,7 +94,6 @@ void dfs(int idx) {
     dfs(next_idx);
     if (period[next_idx] >= 0) period[idx] = period[next_idx] + 1;
 }
-// Copy end
 
 int main() {
     // This sample is Atcode Beginners Contest 135 F
