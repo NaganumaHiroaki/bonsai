@@ -19,7 +19,8 @@ class Bellmanford {
         vector<bool> in_negative;
         bool negative_loop;
     public:
-        Bellmanford(int node_num, int edge_num, T _identity):identity(_identity), dist(vector<T>(node_num, _identity)), in_negative(vector<bool>(node_num, false)) {}
+        Bellmanford(int node_num, int edge_num, T _identity):
+        identity(_identity), dist(vector<T>(node_num, _identity)), in_negative(vector<bool>(node_num, false)) {}
         void add_edge(int from, int to, T cost) {
             edge e = {from, to, cost};
             edges.push_back(e);

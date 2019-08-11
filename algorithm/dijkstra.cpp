@@ -18,26 +18,20 @@ class Dijkstra {
             int to;
             T cost;
         };
-        T inf;
-        int node_num;
+        T identity;
         vector<vector<edge> > graph;
         vector<T> dist;
     public:
-        Dijkstra(T n) {
-            inf = numeric_limits<T>::max();  // please pay attention to overflow
-            node_num = n;
-            graph.resize(node_num);
-            dist.resize(node_num);
-            fill(dist.begin(), dist.end(), inf);
-        }
+        Dijkstra(int node_num, T _identity):
+        identity(_identity), graph(vector<vector<edge> >(node_num)), dist(vector<T>(node_num, identity)) {}
         void add_edge(int from, int to, T cost) {
-            edge e1 = {to, cost};
-            graph[from].push_back(edge(e1));
+            edge now_edge = {to, cost};
+            graph[from].push_back(now_edge);
         }
-        void calc_shortest_path(int start) {
+        void calc_shortest_path(int start_node) {
             priority_queue<P, vector<P>, greater<P> > PQ;
-            dist[start] = 0;
-            PQ.push(P(0, start));
+            dist[start_node] = 0;
+            PQ.push(P(0, start_node));
             while (!PQ.empty()) {
                 P now = PQ.top();
                 PQ.pop();
@@ -58,6 +52,9 @@ class Dijkstra {
 };
 // Copy end
 
+
+const ll INF = 1LL << 50;
+
 int main() {
     // This sample is Atcoder Beginners Contest 35 D
     ll N, M, T;
@@ -65,20 +62,19 @@ int main() {
     vector<ll> A(N);
     for (ll i = 0; i < N; i++) cin >> A[i];
     ll a, b, c;
-    Dijkstra<ll> D1(N), D2(N);
+    Dijkstra<ll> dkt1(N, INF), dkt2(N, INF);
     for (ll i = 0; i < M; i++) {
         cin >> a >> b >> c;
         a--, b--;
-        D1.add_edge(a, b, c);
-        D2.add_edge(b, a, c);
+        dkt1.add_edge(a, b, c);
+        dkt2.add_edge(b, a, c);
     }
-    D1.calc_shortest_path(0);
-    D2.calc_shortest_path(0);
+    dkt1.calc_shortest_path(0);
+    dkt2.calc_shortest_path(0);
     ll ans = 0;
-    ll INF = numeric_limits<ll>::max();
     for (ll u = 0; u < N; u++) {
-        if (D1.get_dist(u) == INF || D2.get_dist(u) == INF) continue;
-        ans = max(ans, A[u] * (T - D1.get_dist(u) - D2.get_dist(u)));
+        if (dkt1.get_dist(u) == INF || dkt2.get_dist(u) == INF) continue;
+        ans = max(ans, A[u] * (T - dkt1.get_dist(u) - dkt2.get_dist(u)));
     }
     cout << ans << endl;
     return 0;
