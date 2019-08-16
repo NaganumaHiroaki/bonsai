@@ -18,6 +18,15 @@ class Polygon2D {
         Polygon2D():x(0), y(0) {}
         Polygon2D(T _x, T _y):x(_x), y(_y) {}
         Polygon2D(T _x, T _y, int _idx):x(_x), y(_y), idx(_idx) {}  // for convex-full
+        static T dot(const Polygon2D<T>& p1, const Polygon2D<T>& p2) {
+            return p1.x * p2.x + p1.y * p2.y;
+        }
+        static T det(const Polygon2D<T>& p1, const Polygon2D<T>& p2) {
+            return p1.x * p2.y - p1.y * p2.x;
+        }
+        static T pow_dist(const Polygon2D<T>& p) {
+            return dot(p, p);
+        }
         const Polygon2D operator=(const Polygon2D<T>& p) {
             x = p.x;
             y = p.y;
@@ -45,14 +54,9 @@ class Polygon2D {
         int get_idx() const {
             return idx;
         }
-        static T dot(const Polygon2D<T>& p1, const Polygon2D<T>& p2) {
-            return p1.x * p2.x + p1.y * p2.y;
-        }
-        static T det(const Polygon2D<T>& p1, const Polygon2D<T>& p2) {
-            return p1.x * p2.y - p1.y * p2.x;
-        }
-        static T pow_dist(const Polygon2D<T>& p) {
-            return dot(p, p);
+        void show() {
+            // for debug
+            cout << '(' << x << ',' << y << ')' << endl;
         }
 };
 
