@@ -14,10 +14,9 @@ class Matrix {
         size_t row_size, column_size;
         matrix data;
     public:
-        Matrix(size_t _row_size, size_t _column_size):
-        data(_row_size, array(_column_size, T())), row_size(_row_size), column_size(_column_size) {}
-        Matrix(const Matrix<T>& matrix):
-        data(matrix.data), row_size(matrix.row_size), column_size(matrix.column_size){}
+        Matrix() {}
+        Matrix(size_t _row_size, size_t _column_size):data(_row_size, array(_column_size, T())), row_size(_row_size), column_size(_column_size) {}
+        Matrix(const Matrix<T>& matrix):data(matrix.data), row_size(matrix.row_size), column_size(matrix.column_size){}
 
         size_t row() const {return row_size;}
         size_t col() const {return column_size;}
@@ -28,15 +27,6 @@ class Matrix {
         const array& operator[](size_t idx) const {
             return data[idx];
         }
-        const Matrix operator+(const Matrix& X) const {
-            Matrix res(row_size, column_size);
-            for (int i = 0; i < (int)res.row(); i++) {
-                for (int j = 0; j < (int)res.col(); j++) {
-                    res[i][j] = data[i][j] + X[i][j];
-                }
-            }
-            return res;
-        }
         Matrix& operator+=(const Matrix& X) {
             for (int i = 0; i < (int)row_size; i++) {
                 for (int j = 0; j < (int)column_size; j++) {
@@ -44,15 +34,6 @@ class Matrix {
                 }
             }
             return *this;
-        }
-        const Matrix operator-(const Matrix& X) const {
-            Matrix res(row_size, column_size);
-            for (int i = 0; i < (int)res.row(); i++) {
-                for (int j = 0; j < (int)res.col(); j++) {
-                    res[i][j] = data[i][j] - X[i][j];
-                }
-            }
-            return res;
         }
         Matrix& operator-=(const Matrix& X) {
             for (int i = 0; i < (int)row_size; i++) {
@@ -62,7 +43,7 @@ class Matrix {
             }
             return *this;
         }
-        const Matrix operator*(const Matrix& X) const {
+        Matrix operator*(const Matrix& X) const {
             size_t new_row = row_size, new_column = X.col();
             Matrix res(new_row, new_column);
             for (int i = 0; i < (int)res.row(); i++) {
@@ -70,15 +51,6 @@ class Matrix {
                     for (int k = 0; k < (int)column_size; k++) {
                         res[i][j] += data[i][k] * X[k][j];
                     }
-                }
-            }
-            return res;
-        }
-        const Matrix operator*(T scalar) const {
-            Matrix res(row_size, column_size);
-            for (int i = 0; i < res.row(); i++) {
-                for (int j = 0; j < res.col(); j++) {
-                    res[i][j] = data[i][j] * scalar;
                 }
             }
             return res;
@@ -91,22 +63,26 @@ class Matrix {
             }
             return *this;
         }
-        const Matrix operator%(T mod) const {
-            Matrix res(*this);
-            for (int i = 0; i < (int)res.row(); i++) {
-                for (int j = 0; j < (int)res.col(); j++) {
-                    res[i][j] %= mod;
-                }
-            }
-            return res;
-        }
-        Matrix& operator%=(T mod) {
+        Matrix& operator%=(T modulus) {
             for (int i = 0; i < (int)row_size; i++) {
                 for (int j = 0; j < (int)column_size; j++) {
-                    data[i][j] %= mod;
+                    data[i][j] %= modulus;
                 }
             }
             return *this;
+        }
+        Matrix operator+(const Matrix& X) const {
+            return Matrix(*this) += X;
+        }
+        Matrix operator-(const Matrix& X) const {
+            return Matrix(*this) -= X;
+        }
+        
+        Matrix operator*(T scalar) const {
+            return Matrix(*this) *= scalar;
+        }
+        Matrix operator%(T modulus) const {
+            return Matrix(*this) %= modulus;
         }
 
         static Matrix identity(size_t row, size_t col) {
