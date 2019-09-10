@@ -20,25 +20,25 @@ class ModInt {
         T getValue() const {
             return value_;
         }
-        ModInt& operator=(const ModInt& x) {
+        const ModInt& operator=(const ModInt& x) {
             value_ = x.value_;
             return *this;
         }
-        ModInt& operator+=(const ModInt& x)  {
+        const ModInt& operator+=(const ModInt& x)  {
             value_ += x.value_;
             if (value_ >= modulus) value_ -= modulus;
             return *this;
         }
-        ModInt& operator-=(const ModInt& x) {
+        const ModInt& operator-=(const ModInt& x) {
             if (value_ < x.value_) value_ += modulus;
             value_ -= x.value_;
             return *this;
         }
-        ModInt& operator*=(const ModInt& x) {
+        const ModInt& operator*=(const ModInt& x) {
             value_ = (value_ * x.value_) % modulus;
             return *this;
         }
-        ModInt& operator/=(const ModInt& x) {
+        const ModInt& operator/=(const ModInt& x) {
             T now_value = x.value_;
             long long cnt = modulus - 2;
             while (cnt > 0) {
