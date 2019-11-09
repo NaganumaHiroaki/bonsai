@@ -13,7 +13,7 @@ typedef long long ll;
 template <class T>
 class Dijkstra {
     private:
-        using P = pair<int, int>;
+        using P = pair<T, int>;
         struct edge {
             int to;
             T cost;
