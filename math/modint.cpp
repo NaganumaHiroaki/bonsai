@@ -1,114 +1,115 @@
 // Need start
 #include<iostream>
 // Need end
-#include<vector>
 using namespace std;
 
 // Copy start
-template<typename T, long long modulus=1000000007>
+template<typename T, long long MOD_VALUE>
 class ModInt {
+    static constexpr long long MOD = MOD_VALUE;
     private:
         T value_;
     public:
         ModInt() {}
-        ModInt(const T& _value) {
-            value_ = _value % modulus;
-        }
-        ModInt(const ModInt& x) {
-            value_ = x.value_;
-        }
-        T getValue() const {
-            return value_;
-        }
-        ModInt& operator=(const ModInt& x) {
-            value_ = x.value_;
-            return *this;
-        }
-        ModInt& operator+=(const ModInt& x)  {
-            value_ += x.value_;
-            if (value_ >= modulus) value_ -= modulus;
-            return *this;
-        }
-        ModInt& operator-=(const ModInt& x) {
-            if (value_ < x.value_) value_ += modulus;
-            value_ -= x.value_;
-            return *this;
-        }
-        ModInt& operator*=(const ModInt& x) {
-            value_ = (value_ * x.value_) % modulus;
-            return *this;
-        }
-        ModInt& operator/=(const ModInt& x) {
-            T now_value = x.value_;
-            long long cnt = modulus - 2;
-            while (cnt > 0) {
-                if (cnt & 1) {
-                    value_ = (value_ * now_value) % modulus;
-                }
-                now_value = (now_value * now_value) % modulus;
-                cnt /= 2;
-            }
-            return *this;
-        }
-        const ModInt operator+(const ModInt& x) const {
-            return ModInt(*this) += x;
-        }
-        const ModInt operator-(const ModInt& x) const {
-            return ModInt(*this) -= x;
-        }
-        const ModInt operator*(const ModInt& x) const {
-            return ModInt(*this) *= x;
-        }
-        const ModInt operator/(const ModInt& x) const {
-            return ModInt(*this) /= x;
-        }
-        ModInt operator++(int) {
-            ModInt tmp(*this);
-            value_ = (value_ + 1 == modulus ? 0 : value_ + 1);
-            return tmp;
-        }
-        ModInt operator--(int) {
-            ModInt tmp(*this);
-            value_ = (value_ - 1 < 0 ? modulus - 1 : value_ - 1);
-            return tmp;
-        }
-        friend std::istream& operator>>(std::istream& stream, ModInt& x) {
-            stream >> x.value_;
-            x.value_ %= modulus;
-            return stream;
-        }
-        friend std::ostream& operator<<(std::ostream& stream, const ModInt& x) {
-            stream << x.value_;
-            return stream;
-        }
+        ModInt(const T& value):value_(value % MOD) {}
+        ModInt& operator+=(const ModInt& x)  {value_ += x.value_; if (value_ >= MOD) value_ -= MOD; return *this;}
+        friend ModInt& operator+=(const T& x, const ModInt& y) {ModInt res(x); res.value_ += x.value_; if (res.value_ >= MOD) res.value_ -= MOD; return res;}
+        ModInt& operator-=(const ModInt& x) {if (value_ < x.value_) value_ += MOD; value_ -= x.value_; return *this;}
+        friend ModInt& operator-=(const T& x, const ModInt& y) {ModInt res(x); if (res.value_ < y.value_) res.value_ += MOD; res.value_ -= y.value_; return res;}
+        ModInt& operator*=(const ModInt& x) {value_ = (value_ * x.value_) % MOD; return *this;}
+        friend ModInt& operator*=(const T& x, const ModInt& y) {ModInt res(x); res.value_ = (res.value_ * y.value_) % MOD; return res;}
+        const ModInt operator+(const ModInt& x) const {return ModInt(*this) += x;}
+        friend const ModInt operator+(const T& x, const ModInt& y) {return ModInt(x) += y;}
+        const ModInt operator-(const ModInt& x) const {return ModInt(*this) -= x;}
+        friend const ModInt operator-(const T& x, const ModInt& y) {return ModInt(x) -= y;}
+        const ModInt operator*(const ModInt& x) const {return ModInt(*this) *= x;}
+        friend const ModInt operator*(const T& x, const ModInt& y) {return ModInt(x) *= y;}
+        static ModInt modpow(ModInt x, long long y) {ModInt z = 1; while (y > 0) {if (y & 1) {z *= x;}x *= x; y /= 2;} return z;}
+        ModInt& operator/=(const ModInt& x) {return *this *= modpow(x, MOD - 2);}
+        const ModInt operator/(const ModInt& x) const {return ModInt(*this) /= x;}
+        friend const ModInt operator/(const T& x, const ModInt& y) {return ModInt(x) /= y;}
+        ModInt operator++(int) {ModInt tmp(*this); value_ = (value_ + 1 == MOD ? 0 : value_ + 1); return tmp;}
+        ModInt operator--(int) {ModInt tmp(*this); value_ = (value_ - 1 < 0 ? MOD - 1 : value_ - 1); return tmp;}
+        friend istream& operator>>(istream& stream, ModInt& x) {stream >> x.value_; x.value_ %= MOD; return stream;}
+        friend ostream& operator<<(ostream& stream, const ModInt& x) {stream << x.value_; return stream;}
 };
 // Copy end
 
 using ll = long long;
-using mint = ModInt<ll>;
+using mint = ModInt<ll, 1000000007>;
+
+#ifdef ABC_143_E
+#include<vector>
+
+mint dfs(int k, const vector<vector<int>>& graph, int now, int from) {
+    mint can_use_color_num;
+    if (from == -1) {
+        can_use_color_num = k - 1;
+    }
+    else {
+        can_use_color_num = k - 2;
+    }
+    if (k < graph[now].size()) {
+        return 0;
+    }
+    mint case_num = 1;
+    for (int node : graph[now]) {
+        if (node == from) continue;
+        case_num *= can_use_color_num;
+        can_use_color_num--;
+    }
+    for (int node : graph[now]) {
+        if (node == from) continue;
+        case_num *= dfs(k, graph, node, now);
+    }
+    return case_num;
+}
 
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    // This sample is AtCoder Japan Saikyo Contest 2019 qualification round B
+    // This sample is AtCoder Beginners Contest 133 E
+    int N, K;
+    cin >> N >> K;
+    vector<vector<int>> graph(N);
+    int A, B;
+    for (int i = 0; i < N - 1; ++i) {
+        cin >> A >> B;
+        --A, --B;
+        graph[A].push_back(B);
+        graph[B].push_back(A);
+    }
+    mint ans = mint(K) * dfs(K, graph, 0, -1);
+    cout << ans << endl;
+    return 0;
+}
+#endif
+
+//#ifdef JSC_2019_QUAL_B
+#include<vector>
+
+int main() {
     int N;
     mint K;
     cin >> N >> K;
-    vector<ll> A(N);
-    for (int i = 0; i < N; ++i) cin >> A[i];
-    mint ans = 0;
-    mint one(1), two(2);
+    vector<int> A(N);
     for (int i = 0; i < N; ++i) {
-        mint prev(0), tail(0);
+        cin >> A[i];
+    }
+    mint ans = 0;
+    for (int i = 0; i < N; ++i) {
+        mint cnt = 0;
         for (int j = 0; j < i; ++j) {
-            if (A[i] < A[j]) prev++;
+            if (A[j] > A[i]) cnt++;
         }
-        for (int j = i; j < N; ++j) {
-            if (A[i] < A[j]) tail++;
+        ans += K * (2 * cnt + (K - 1) * cnt) / 2;
+        cnt = 0;
+        for (int j = i + 1; j < N; ++j) {
+            if (A[j] > A[i]) cnt++;
         }
-        mint sum = K * (two * prev + (K - one) * (prev + tail)) / two;
-        ans += sum;
+        ans += (K - 1) * (2 * cnt + (K - 2) * cnt) / 2;
     }
     cout << ans << endl;
     return 0;
 }
+//#endif
