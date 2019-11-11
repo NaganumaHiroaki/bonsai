@@ -13,28 +13,26 @@ template <typename T>
 class BIT {
     // 1-indexed
     private:
-        size_t node_size;
-        vector<T> node;
-        T identity;
-        function<T(T, T)> operation;
-        function<T(T, T)> update;
+        size_t node_size_;
+        vector<T> node_;
+        T identity_;
+        function<T(T, T)> operation_;
+        function<T(T, T)> update_;
     public:
-        BIT(size_t _node_size, T _identity, function<T(T, T)> _operation, function<T(T, T)> _update):
-        node_size(_node_size), identity(_identity), operation(_operation), update(_update) {
-            node = vector<T>(node_size + 1, identity);
-        }
+        BIT(size_t node_size, T identity, function<T(T, T)> operation, function<T(T, T)> update):
+        node_size_(node_size), identity_(identity), operation_(operation), update_(update), node_(vector<T>(node_size + 1, identity)) {}
         void change(int idx, T new_value) {
-            node[idx] = update(node[idx], new_value);
-            while (idx <= node_size) {
+            node_[idx] = update_(node_[idx], new_value);
+            while (idx <= node_size_) {
                 idx += idx & -idx;
-                if (idx > node_size) break;
-                node[idx] = operation(node[idx], new_value);
+                if (idx > node_size_) break;
+                node_[idx] = operation_(node_[idx], new_value);
             }
         }
         T query(int idx) {
-            T res = identity;
+            T res = identity_;
             while (idx > 0) {
-                res = operation(res, node[idx]);
+                res = operation_(res, node_[idx]);
                 idx -= idx & -idx;
             }
             return res;
@@ -62,14 +60,14 @@ int main() {
     }
     box[0] = P(0, 0);
     sort(box.begin(), box.end(), comp);
-    BIT<int> B(MAX_W, -INF, 
+    BIT<int> bit(MAX_W, -INF, 
                 [](int a, int b) {return max(a, b);},
                 [](int a, int b) {return b;});
     vector<int> dp(N + 1);
-    B.change(1, 0);  // H = 1 (H = 0) 
+    bit.change(1, 0);  // H = 1 (H = 0) 
     for (int i = 1; i <= N; i++) {
-        dp[i] = B.query(box[i].second - 1) + 1;
-        B.change(box[i].second, dp[i]);
+        dp[i] = bit.query(box[i].second - 1) + 1;
+        bit.change(box[i].second, dp[i]);
     }
     int ans = -INF;
     for (int i = 1; i <= N; i++) {
