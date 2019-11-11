@@ -9,42 +9,42 @@ typedef long long ll;
 // Copy start
 class UnionFind {
     private:
-        vector<int> parent;
-        vector<int> node_rank;
-        vector<int> sizes;
+        vector<int> parent_;
+        vector<int> node_rank_;
+        vector<int> sizes_;
     public:
         UnionFind(int node_num):
-        parent(vector<int>(node_num)), node_rank(vector<int>(node_num)), sizes(vector<int>(node_num)) {
+        parent_(vector<int>(node_num)), node_rank_(vector<int>(node_num)), sizes_(vector<int>(node_num)) {
             for (int i = 0; i < node_num; ++i) {
-                parent[i] = i;
-                node_rank[i] = 0;
-                sizes[i] = 1;
+                parent_[i] = i;
+                node_rank_[i] = 0;
+                sizes_[i] = 1;
             }
         }
-        int root(int u) {
-            return parent[u] == u ? u : parent[u] = root(parent[u]);
+        int getRoot(int u) {
+            return parent_[u] == u ? u : parent_[u] = getRoot(parent_[u]);
         }
-        bool same(int u, int v) {
-            return root(u) == root(v);
+        bool isSame(int u, int v) {
+            return getRoot(u) == getRoot(v);
         }
         void unite(int u, int v) {
-            u = root(u);
-            v = root(v);
+            u = getRoot(u);
+            v = getRoot(v);
             if (u == v) return;
-            if (node_rank[u] < node_rank[v]) {
-                parent[u] = v;
-                sizes[v] += sizes[u];
+            if (node_rank_[u] < node_rank_[v]) {
+                parent_[u] = v;
+                sizes_[v] += sizes_[u];
             }
             else {
-                parent[v] = u;
-                sizes[u] += sizes[v];
-                if (node_rank[u] == node_rank[v]) {
-                    node_rank[u]++;
+                parent_[v] = u;
+                sizes_[u] += sizes_[v];
+                if (node_rank_[u] == node_rank_[v]) {
+                    node_rank_[u]++;
                 }
             }
         }
-        int get_size(int u) {
-            return sizes[root(u)];
+        int getSize(int u) {
+            return sizes_[getRoot(u)];
         }
 };
 // Copy end
@@ -63,11 +63,11 @@ int main() {
     vector<ll> ans;
     for (ll i = M - 1; i >= 0; i--) {
         ans.push_back(now_sizes);
-        if (uf.same(A[i], B[i])) {
+        if (uf.isSame(A[i], B[i])) {
             continue;
         }
         else {
-            now_sizes -= (ll)uf.get_size(A[i]) * (ll)uf.get_size(B[i]);
+            now_sizes -= (ll)uf.getSize(A[i]) * (ll)uf.getSize(B[i]);
             uf.unite(A[i], B[i]);
         }
     }
