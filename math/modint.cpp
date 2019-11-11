@@ -33,13 +33,40 @@ class ModInt {
         friend istream& operator>>(istream& stream, ModInt& x) {stream >> x.value_; x.value_ %= MOD; return stream;}
         friend ostream& operator<<(ostream& stream, const ModInt& x) {stream << x.value_; return stream;}
 };
+
+// Need start
+#include<vector>
+// Need end
+
+template<typename T, long long MOD>
+class Combination {
+    using mint = ModInt<T, MOD>;
+    private:
+        vector<mint> factorial_, inv_factorial_, inv_;
+    public:
+        Combination(int max_num)
+            :factorial_(max_num + 1), inv_factorial_(max_num + 1), inv_(max_num + 1) {
+            factorial_[0] = factorial_[1] = 1;
+            inv_factorial_[0] = inv_factorial_[1] = 1;
+            inv_[1] = 1;
+            for (int i = 2; i <= max_num; i++) {
+                factorial_[i] = factorial_[i - 1] * i;
+                inv_[i] = MOD - inv_[MOD % i] * (MOD / i);
+                inv_factorial_[i] = inv_factorial_[i - 1] * inv_[i];
+            }
+        }
+        mint calc(int n, int k) {
+            if (n < k) return 0;
+            if (n < 0 || k < 0) return 0;
+            return factorial_[n] * inv_factorial_[k] * inv_factorial_[n - k];
+        }
+};
 // Copy end
 
 using ll = long long;
 using mint = ModInt<ll, 1000000007>;
 
 #ifdef ABC_143_E
-#include<vector>
 
 mint dfs(int k, const vector<vector<int>>& graph, int now, int from) {
     mint can_use_color_num;
@@ -85,10 +112,12 @@ int main() {
 }
 #endif
 
-//#ifdef JSC_2019_QUAL_B
-#include<vector>
+#ifdef JSC_2019_QUAL_B
 
 int main() {
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    // This sample is AtCoder Japan Saikyo Contest 2019 Qual B
     int N;
     mint K;
     cin >> N >> K;
@@ -110,6 +139,24 @@ int main() {
         ans += (K - 1) * (2 * cnt + (K - 2) * cnt) / 2;
     }
     cout << ans << endl;
+    return 0;
+}
+#endif
+
+//#ifdef ABC_132_D
+
+int main() {
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    // This sample is Atcoder Beginners Contest 132 D
+    int N, K;
+    cin >> N >> K;
+    Combination<ll, 1000000007> combination(N);
+    for (int i = 1; i <= K; i++) {
+        mint k_div = combination.calc(K - 1, i - 1);
+        mint all_div = combination.calc(N - K + 1, i);
+        cout << k_div * all_div << endl;
+    }
     return 0;
 }
 //#endif
