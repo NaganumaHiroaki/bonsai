@@ -101,12 +101,12 @@ int main() {
         if (l.first != r.first) return l.first < r.first;
         else return l.second > r.second;
     });
-    SegTree<int> S(MAX_W, INF, [](int a, int b) {return min(a, b);}, [](int a, int b) {return b;});
+    SegTree<int> seg(MAX_W, INF, [](int a, int b) {return min(a, b);}, [](int a, int b) {return b;});
     vector<int> dp(N, 0);
-    S.change(0, 0);
+    seg.change(0, 0);
     for (int i = 0; i < N; i++) {
-        dp[i] = -S.query(0, box[i].second) + 1;
-        S.change(box[i].second, -dp[i]);
+        dp[i] = -seg.query(0, box[i].second) + 1;
+        seg.change(box[i].second, -dp[i]);
     }
     int ans = -INF;
     for (int i = 0; i < N; i++) {
