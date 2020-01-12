@@ -11,7 +11,7 @@ class ModInt {
         T value_;
     public:
         ModInt() {}
-        ModInt(const T& value):value_((value + MOD) % MOD) {}
+        ModInt(const T& value) {if (value >= 0) {value_ = value % MOD;} else {T k = (MOD - 1 - value) / MOD; value_ = (value + k * MOD) % MOD;}}
         ModInt& operator+=(const ModInt& x)  {value_ += x.value_; if (value_ >= MOD) value_ -= MOD; return *this;}
         friend ModInt& operator+=(const T& x, const ModInt& y) {ModInt res(x); res.value_ += x.value_; if (res.value_ >= MOD) res.value_ -= MOD; return res;}
         ModInt& operator-=(const ModInt& x) {if (value_ < x.value_) value_ += MOD; value_ -= x.value_; return *this;}
