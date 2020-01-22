@@ -6,7 +6,16 @@
 #include<algorithm>
 #include<functional>
 // Need end
+#define rep(i, start, end) for (int i = (int)start; i < (int)end; ++i)
+#define rrep(i, start, end) for (int i = (int)start - 1; i >= end; --i)
+#define iter(i, c) for (auto i = (c).begin(); i != (c).end(); ++i)
+#define riter(i, c) for (auto i = (c).rbegin(); i != (c).rend(); ++i)
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
 using namespace std;
+using ll = long long;
+template<typename T> inline bool chmax(T& a, T b) {if (a < b) {a = b; return true;} return 0;}
+template<typename T> inline bool chmin(T& a, T b) {if (a > b) {a = b; return true;} return 0;}
 
 // Copy start
 const double EPS = 1e-10;
@@ -104,10 +113,8 @@ vector<Polygon2D<T>> convex_hull(vector<Polygon2D<T>> ps, int vertex_num) {
 }
 // Copy end
 
-int main() {
+void solve_AGC_21_B() {
     // This sample is AtCoder Grand Contest 21 B
-    cin.tie(0);
-    ios::sync_with_stdio(false);
     int N;
     cin >> N;
     vector<Polygon2D<double>> ps(N);
@@ -120,7 +127,7 @@ int main() {
         cout << fixed << setprecision(7);
         cout << 0.5 << endl;
         cout << 0.5 << endl;
-        return 0;
+        return;
     }
     vector<Polygon2D<double> > qs = convex_hull(ps, N);
     qs.push_back(qs[0]);
@@ -136,5 +143,49 @@ int main() {
     for (int i = 0; i < N; i++) {
         cout << ans[i] << endl;
     }
+    return;
+}
+
+void solve_ABC_151_F() {
+    // This sample is AtCoder Beginners Contest 151 F
+    int N;
+    cin >> N;
+    vector<Polygon2D<double>> points;
+    double x, y;
+    rep(i, 0, N) {
+        cin >> x >> y;
+        points.emplace_back(x, y);
+    }
+    vector<Polygon2D<double>> centers;
+    rep(i, 0, N) rep(j, i + 1, N) {
+        centers.push_back((points[i] + points[j]) / 2);
+        rep(k, j + 1, N) {
+            if (Polygon2D<double>::ccw(points[i], points[j], points[k]) == 0) {
+                continue;
+            }
+            centers.push_back(getCircumCenter(points[i], points[j], points[k]));
+        }
+    }
+    double ans = 1LL << 60;
+    for (auto now_center : centers) {
+        double max_r = 0.0;
+        for (auto now_point : points) {
+            chmax(max_r, (now_center - now_point).abs());
+        }
+        chmin(ans, max_r);
+    }
+    cout << fixed << setprecision(10) << ans << endl;
+    return;
+}
+
+int main() {
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    #ifdef AGC_21_B
+    solve_AGC_21_B();
+    #endif
+    #ifdef ABC_151_F
+    solve_ABC_151_F();
+    #endif
     return 0;
 }
