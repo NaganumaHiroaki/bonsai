@@ -5,62 +5,62 @@ using namespace std;
 
 // Copy start
 class LCA {
-    private:
-        int max_log_v_;
-        vector<vector<int>> parent_;
-        vector<int> depth_;
-        void dfs(const vector<vector<int>>& graph, int node, int parent, int dist) {
-            parent_[0][node] = parent;
-            depth_[node] = dist;
-            for (auto next_node : graph[node]) {
-                if (next_node != parent) {
-                    dfs(graph, next_node, node, dist + 1);
+private:
+    int max_log_v_;
+    vector<vector<int>> parent_;
+    vector<int> depth_;
+    void dfs(const vector<vector<int>>& graph, int node, int parent, int dist) {
+        parent_[0][node] = parent;
+        depth_[node] = dist;
+        for (auto next_node : graph[node]) {
+            if (next_node != parent) {
+                dfs(graph, next_node, node, dist + 1);
+            }
+        }
+    }
+public:
+    LCA(const vector<vector<int>>& graph, int root) {
+        max_log_v_ = 0;
+        int node_num = (int)graph.size();
+        depth_ = vector<int>(node_num);
+        int tmp = node_num;
+        while (tmp > 0) {
+            ++max_log_v_;
+            tmp /= 2;
+        }
+        parent_ = vector<vector<int>>(max_log_v_, vector<int>(node_num));
+        dfs(graph, root, -1, 0);
+        for (int i = 0; i < max_log_v_ - 1; ++i) {
+            for (int node = 0; node < node_num; ++node) {
+                if (parent_[i][node] < 0) {
+                    parent_[i + 1][node] = -1;
+                }
+                else {
+                    parent_[i + 1][node] = parent_[i][parent_[i][node]];
                 }
             }
         }
-    public:
-        LCA(const vector<vector<int>>& graph, int root) {
-            max_log_v_ = 0;
-            int node_num = (int)graph.size();
-            depth_ = vector<int>(node_num);
-            int tmp = node_num;
-            while (tmp > 0) {
-                ++max_log_v_;
-                tmp /= 2;
-            }
-            parent_ = vector<vector<int>>(max_log_v_, vector<int>(node_num));
-            dfs(graph, root, -1, 0);
-            for (int i = 0; i < max_log_v_ - 1; ++i) {
-                for (int node = 0; node < node_num; ++node) {
-                    if (parent_[i][node] < 0) {
-                        parent_[i + 1][node] = -1;
-                    }
-                    else {
-                        parent_[i + 1][node] = parent_[i][parent_[i][node]];
-                    }
-                }
+    }
+    int getLCA(int u, int v) {
+        if (depth_[u] > depth_[v]) {
+            swap(u, v);
+        }
+        for (int i = 0; i < max_log_v_; ++i) {
+            if ((depth_[v] - depth_[u]) >> i & 1) {
+                v = parent_[i][v];
             }
         }
-        int getLCA(int u, int v) {
-            if (depth_[u] > depth_[v]) {
-                swap(u, v);
-            }
-            for (int i = 0; i < max_log_v_; ++i) {
-                if ((depth_[v] - depth_[u]) >> i & 1) {
-                    v = parent_[i][v];
-                }
-            }
-            if (u == v) {
-                return u;
-            }
-            for (int i = max_log_v_ - 1; i >= 0; --i) {
-                if (parent_[i][u] != parent_[i][v]) {
-                    u = parent_[i][u];
-                    v = parent_[i][v];
-                }
-            }
-            return parent_[0][u];
+        if (u == v) {
+            return u;
         }
+        for (int i = max_log_v_ - 1; i >= 0; --i) {
+            if (parent_[i][u] != parent_[i][v]) {
+                u = parent_[i][u];
+                v = parent_[i][v];
+            }
+        }
+        return parent_[0][u];
+    }
 };
 // Copy end
 
