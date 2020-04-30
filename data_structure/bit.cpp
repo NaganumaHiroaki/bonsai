@@ -23,9 +23,11 @@ class BIT {
         node_size_(node_size), identity_(identity), operation_(operation), update_(update), node_(vector<T>(node_size + 1, identity)) {}
         void change(int idx, T new_value) {
             node_[idx] = update_(node_[idx], new_value);
-            while (idx <= node_size_) {
+            while (idx <= (int)node_size_) {
                 idx += idx & -idx;
-                if (idx > node_size_) break;
+                if (idx > (int)node_size_) {
+                    break;
+                }
                 node_[idx] = operation_(node_[idx], new_value);
             }
         }
