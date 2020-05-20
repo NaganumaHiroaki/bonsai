@@ -14,7 +14,7 @@ private:
     vector<int> sizes_;
 public:
     UnionFind(int node_num):
-    parent_(vector<int>(node_num)), node_rank_(vector<int>(node_num)), sizes_(vector<int>(node_num)) {
+        parent_(vector<int>(node_num)), node_rank_(vector<int>(node_num)), sizes_(vector<int>(node_num)) {
         for (int i = 0; i < node_num; ++i) {
             parent_[i] = i;
             node_rank_[i] = 0;
