@@ -8,90 +8,28 @@ typedef long long ll;
 // Copy start
 template<typename T>
 class Matrix {
-    private:
-        using array = vector<T>;
-        using matrix = vector<array>;
-        size_t row_size, column_size;
-        matrix data;
-    public:
-        Matrix() {}
-        Matrix(size_t _row_size, size_t _column_size):data(_row_size, array(_column_size, T())), row_size(_row_size), column_size(_column_size) {}
-        Matrix(const Matrix<T>& matrix):data(matrix.data), row_size(matrix.row_size), column_size(matrix.column_size){}
-
-        size_t row() const {return row_size;}
-        size_t col() const {return column_size;}
-
-        array& operator[](size_t idx) {
-            return data[idx];
-        }
-        const array& operator[](size_t idx) const {
-            return data[idx];
-        }
-        Matrix& operator+=(const Matrix& X) {
-            for (int i = 0; i < (int)row_size; i++) {
-                for (int j = 0; j < (int)column_size; j++) {
-                    data[i][j] += X[i][j];
-                }
-            }
-            return *this;
-        }
-        Matrix& operator-=(const Matrix& X) {
-            for (int i = 0; i < (int)row_size; i++) {
-                for (int j = 0; j < (int)column_size; j++) {
-                    data[i][j] -= X[i][j];
-                }
-            }
-            return *this;
-        }
-        Matrix operator*(const Matrix& X) const {
-            size_t new_row = row_size, new_column = X.col();
-            Matrix res(new_row, new_column);
-            for (int i = 0; i < (int)res.row(); i++) {
-                for (int j = 0; j < (int)res.col(); j++) {
-                    for (int k = 0; k < (int)column_size; k++) {
-                        res[i][j] += data[i][k] * X[k][j];
-                    }
-                }
-            }
-            return res;
-        }
-        Matrix& operator*=(T scalar) {
-            for (int i = 0; i < (int)row_size; i++) {
-                for (int j = 0; j < (int)column_size; j++) {
-                    data[i][j] *= scalar;
-                }
-            }
-            return *this;
-        }
-        Matrix& operator%=(T modulus) {
-            for (int i = 0; i < (int)row_size; i++) {
-                for (int j = 0; j < (int)column_size; j++) {
-                    data[i][j] %= modulus;
-                }
-            }
-            return *this;
-        }
-        Matrix operator+(const Matrix& X) const {
-            return Matrix(*this) += X;
-        }
-        Matrix operator-(const Matrix& X) const {
-            return Matrix(*this) -= X;
-        }
-        
-        Matrix operator*(T scalar) const {
-            return Matrix(*this) *= scalar;
-        }
-        Matrix operator%(T modulus) const {
-            return Matrix(*this) %= modulus;
-        }
-
-        static Matrix identity(size_t row, size_t col) {
-            Matrix<T> res(row, col);
-            for (int i = 0; i < (int)res.row(); i++) {
-                res[i][i] = 1;
-            }
-            return res;
-        }
+private:
+    using array = vector<T>;
+    using matrix = vector<array>;
+    matrix data_;
+public:
+    Matrix() {}
+    Matrix(size_t row, size_t col):data_(row, array(col)) {}
+    Matrix(const Matrix<T>& mat):data_(mat.data_) {}
+    size_t row() const {return data_.size();}
+    size_t col() const {return data_.front().size();}
+    array& operator[](int idx) {return data_[idx];}
+    const array& operator[](int idx) const {return data_[idx];}
+    Matrix& operator+=(const Matrix& mat) {for (int i = 0; i < (int)data_.size(); i++) for (int j = 0; j < (int)data_[i].size(); j++) {data_[i][j] += mat[i][j];} return *this;}
+    Matrix& operator-=(const Matrix& mat) {for (int i = 0; i < (int)data_.size(); i++) for (int j = 0; j < (int)data_[i].size(); j++) {data_[i][j] -= mat[i][j];} return *this;}
+    Matrix operator*(const Matrix& mat) const {size_t row = data_.size(); size_t col = mat.col(); Matrix res(row, col); for (int i = 0; i < (int)res.row(); i++) for (int j = 0; j < (int)res.col(); j++) for (int k = 0; k < (int)data_.front().size(); k++) {res[i][j] += data_[i][k] * mat[k][j];} return res;}
+    Matrix& operator*=(T scalar) {for (int i = 0; i < (int)data_.size(); i++) for (int j = 0; j < (int)data_[i].size(); j++) {data_[i][j] *= scalar;} return *this;}
+    Matrix& operator%=(T mod) {for (int i = 0; i < (int)data_.size(); i++) for (int j = 0; j < (int)data_[i].size(); j++) {data_[i][j] %= mod;} return *this;}
+    const Matrix operator+(const Matrix& mat) const {return Matrix(*this) += mat;}
+    const Matrix operator-(const Matrix& mat) const {return Matrix(*this) -= mat;}
+    const Matrix operator*(T scalar) const {return Matrix(*this) *= scalar;}
+    const Matrix operator%(T mod) const {return Matrix(*this) %= mod;}
+    static Matrix identity(size_t row, size_t col) {Matrix<T> res(row, col);for (int i = 0; i < (int)res.row(); i++) {res[i][i] = 1;} return res;}
 };
 // Copy end
 
