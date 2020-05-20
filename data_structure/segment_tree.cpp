@@ -18,7 +18,7 @@ private:
     function<T(T, T)> update_;       // ex) add, change, etc..
 public:
     SegTree(size_t node_size, T identity, function<T(T, T)> operation, function<T(T, T)> update):
-    identity_(identity), operation_(operation), update_(update) {
+        identity_(identity), operation_(operation), update_(update) {
         node_size_ = 1;
         while (node_size_ < node_size) node_size_ *= 2;
         node_ = vector<T>(2 * node_size_ - 1, identity);
@@ -50,7 +50,6 @@ public:
     T operator[](int idx) {
         return node_[idx + node_size_ - 1];
     }
-    // serach-method's usage is written on CF567
     int _search(int kth, int node_idx, int node_left, int node_right) {
         // kth >= 1
         if (node_right - node_left == 1) return node_idx - node_size_ + 1;
