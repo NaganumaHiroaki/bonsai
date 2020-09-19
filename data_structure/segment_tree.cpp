@@ -52,12 +52,46 @@ public:
     }
     int _search(int kth, int node_idx, int node_left, int node_right) {
         // kth >= 1
-        if (node_right - node_left == 1) return node_idx - node_size_ + 1;
-        if (node_[node_idx * 2 + 1] < kth) return _search(kth - node_[node_idx * 2 + 1], node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
-        else return _search(kth, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
+        if (node_right - node_left == 1) {
+            return node_idx - node_size_ + 1;
+        }
+        if (node_[node_idx * 2 + 1] < kth) {
+            return _search(kth - node_[node_idx * 2 + 1], node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
+        } else {
+            return _search(kth, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
+        }
     }
     int search(int kth) {
         return _search(kth, 0, 0, node_size_);
+    }
+    int _findMinLeft(int left, int right, T val, int node_idx, int node_left, int node_right) {
+        if (node_[node_idx] < val || right <= node_left || left >= node_right) {
+            return (int)node_size_;
+        }
+        if (node_idx >= (int)node_size_ - 1) {
+            return node_idx - (int)node_size_ + 1;
+        }
+        int left_pos = _findMinLeft(left, right, val, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
+        if (left_pos != (int)node_size_) {
+            return left_pos;
+        }
+        return _findMinLeft(left, right, val, node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
+    }
+    int findMinLeft(int left, int right, T val) {
+        return _findMinLeft(left, right, val, 0, 0, (int)node_size_);
+    }
+    int _findMaxRight(int left, int right, T val, int node_idx, int node_left, int node_right) {
+        if (node_[node_idx] > val || right <= node_left || left >= node_right) {
+            return -1;
+        }
+        if (node_idx >= (int)node_size_ - 1) {
+            return node_idx - (int)node_size_ + 1;
+        }
+        int right_pos = _findMaxRight(left, right, val, node_idx * 2 + 2, (node_left + node_right) / 2, node_right);
+        if (right_pos != (int)node_size_) {
+            return right_pos;
+        }
+        return _findMaxRight(left, right, val, node_idx * 2 + 1, node_left, (node_left + node_right) / 2);
     }
 };
 // Copy end
